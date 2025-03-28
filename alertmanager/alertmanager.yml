@@ -1,0 +1,20 @@
+# alertmanager/alertmanager.yml
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: default
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+
+receivers:
+  - name: default
+#    email_configs:
+#      - to: "example@example.com"
+#        send_resolved: true
+#        smarthost: "smtp.example.com:587"
+#        auth_username: "user"
+#        auth_identity: "user"
+#        auth_password: "password"
+#        from: "alertmanager@example.com"

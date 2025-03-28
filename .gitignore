@@ -4,3 +4,5 @@
 .docker_volumes
 
 .env
+
+*prompt*.txt
