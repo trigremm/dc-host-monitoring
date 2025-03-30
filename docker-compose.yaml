@@ -93,6 +93,7 @@ services:
     image: grafana/promtail:2.8.2
     volumes:
       - /var/log:/var/log:ro
+      - ./imported_logs:/imported_logs:ro # Add this line
       - ./promtail/promtail-config.yaml:/etc/promtail/config.yaml
       - /var/run/docker.sock:/var/run/docker.sock:ro
     command: -config.file=/etc/promtail/config.yaml

@@ -35,3 +35,11 @@ scrape_configs:
       - source_labels: ["__meta_docker_container_name"]
         regex: "hm-.*"
         action: drop
+
+  - job_name: imported_logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: imported_logs
+          __path__: /imported_logs/*.log
