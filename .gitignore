@@ -1,9 +1,10 @@
-.idea
-.vscode
-
-.docker_volumes
+.docker_volumes/
+imported_logs/
 
 .env
+.idea/
+.vscode/
+.DS_Store
 
 *prompt*.txt
 *tree*.txt

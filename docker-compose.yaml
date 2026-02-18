@@ -1,9 +1,5 @@
-# docker-compose.yaml
-name: host-monitoring
-
 services:
   prometheus:
-    container_name: hm-prometheus
     build:
       context: .
       dockerfile_inline: |
@@ -21,12 +17,11 @@ services:
     volumes:
       - ./.docker_volumes/prometheus/data:/prometheus
     ports:
-      - "127.0.0.1:9090:9090" # Only accessible from localhost
+      - "127.0.0.1:9090:9090"
     restart: unless-stopped
     user: nobody:nobody
 
   grafana:
-    container_name: hm-grafana
     image: grafana/grafana:latest
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
@@ -37,28 +32,22 @@ services:
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
       - ./grafana/dashboards:/etc/grafana/dashboards
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on:
       - prometheus
     restart: unless-stopped
-    user: "472" # Grafana's official user ID
+    user: "472"
 
   node:
-    container_name: hm-node
     image: prom/node-exporter:latest
     command:
       - "--path.rootfs=/host"
-    #    ports:
-    #      - "9100:9100"
     volumes:
       - /:/host:ro
     restart: unless-stopped
 
   cadvisor:
-    container_name: hm-cadvisor
     image: gcr.io/cadvisor/cadvisor:latest
-    #    ports:
-    #      - "9080:8080"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
@@ -75,25 +64,23 @@ services:
       retries: 3
 
   loki:
-    container_name: hm-loki
     image: grafana/loki:2.9.13
-    user: root # Run as root to ensure write permissions
+    user: root
     ports:
-      - "127.0.0.1:3100:3100" # Only expose to localhost
+      - "127.0.0.1:3100:3100"
     volumes:
       - ./loki/loki-config.yaml:/etc/loki/local-config.yaml
       - ./.docker_volumes/loki/data:/loki
-      - ./.docker_volumes/loki/wal:/wal # Add explicit volume for WAL directory
-      - ./.docker_volumes/loki/compactor:/loki/compactor # Add explicit volume for compactor
+      - ./.docker_volumes/loki/wal:/wal
+      - ./.docker_volumes/loki/compactor:/loki/compactor
     command: -config.file=/etc/loki/local-config.yaml -config.expand-env=true
     restart: unless-stopped
 
   promtail:
-    container_name: hm-promtail
     image: grafana/promtail:2.8.2
     volumes:
       - /var/log:/var/log:ro
-      - ./imported_logs:/imported_logs:ro # Add this line
+      - ./imported_logs:/imported_logs:ro
       - ./promtail/promtail-config.yaml:/etc/promtail/config.yaml
       - /var/run/docker.sock:/var/run/docker.sock:ro
     command: -config.file=/etc/promtail/config.yaml
@@ -102,10 +89,7 @@ services:
     restart: unless-stopped
 
   alertmanager:
-    container_name: hm-alertmanager
     image: prom/alertmanager
     volumes:
       - ./alertmanager:/etc/alertmanager
-    #    ports:
-    #      - "9093:9093"
     restart: unless-stopped
