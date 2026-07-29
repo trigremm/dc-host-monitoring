@@ -1,6 +1,14 @@
 # grafana/provisioning/datasources/prometheus.yml
 apiVersion: 1
 
+# Drop the pre-uid-pinning entries (auto-generated uids differ per host) so
+# the datasources below are recreated with the fixed uids dashboards expect.
+deleteDatasources:
+  - name: Prometheus
+    orgId: 1
+  - name: Loki
+    orgId: 1
+
 datasources:
   - name: Prometheus
     type: prometheus
