@@ -37,16 +37,19 @@ limits_config:
   enforce_metric_name: false
   reject_old_samples: true
   reject_old_samples_max_age: 168h
+  retention_period: 720h # 30d — enforced by the compactor below
 
 chunk_store_config:
   max_look_back_period: 0s
 
+# table_manager is unused with boltdb-shipper; retention is the compactor's job
 table_manager:
   retention_deletes_enabled: false
   retention_period: 0s
 
-# Explicitly disable compactor to prevent errors
 compactor:
   working_directory: /loki/compactor
   compaction_interval: 10m
-  retention_enabled: false
+  retention_enabled: true
+  retention_delete_delay: 2h
+  retention_delete_worker_count: 50
