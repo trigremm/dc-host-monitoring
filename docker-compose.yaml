@@ -5,6 +5,7 @@ services:
       dockerfile_inline: |
         FROM prom/prometheus:latest
         COPY ./prometheus/prometheus.yml /etc/prometheus/
+        COPY ./prometheus/rules.yml /etc/prometheus/
         USER root
         RUN mkdir -p /prometheus && \
             chown -R nobody:nobody /prometheus
