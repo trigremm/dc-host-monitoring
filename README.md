@@ -10,7 +10,7 @@ vim .env
 make up
 ```
 
-> **Note:** `make up` creates volume directories with proper permissions (grafana uid 472, prometheus nobody).
+> **Note:** `make up` pre-creates the `.docker_volumes/` data directories (prometheus, grafana, loki) with `chmod 777` so each container's own user can write to them.
 
 ## Commands
 
@@ -37,9 +37,8 @@ make f          # alias for format
 
 - Grafana: http://localhost:3000 (default: admin/admin)
 - Prometheus: http://localhost:9090
+- Loki API: http://localhost:3100 (no UI of its own — query logs via Grafana → Explore)
 
-## Setup Grafana
+## Grafana provisioning
 
-1. Open Grafana at http://localhost:3000
-2. Add data source: Prometheus → `http://prometheus:9090`
-3. Import dashboards: 1860, 20825, 11277
+Datasources (Prometheus, Loki) and the three dashboards (node-exporter full, docker/cAdvisor, Loki logs) are provisioned automatically from `grafana/provisioning/` and `grafana/dashboards/` on start — nothing to add or import by hand. To change a dashboard, edit its JSON there and restart Grafana.
